@@ -54,3 +54,9 @@ app.*.map.json
 /top.json
 /Starfield_Wallpaper_Light.png
 /windows/flutter/ephemeral/
+
+# runtime user data (never commit)
+tasks.json
+top.json
+range.json
+size.txt
