@@ -14,7 +14,14 @@
 
 ## 界面预览
 
-![界面预览](docs/screenshot.png)
+主界面
+
+![主界面](docs/screenshot.png)
+
+设置页
+
+![设置页](docs/screenshot-settings.png)
+
 
 ## 操作说明
 
