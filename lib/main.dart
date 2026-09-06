@@ -847,7 +847,7 @@ class TimelinePainter extends CustomPainter {
     const double leftStart = 10; // 日程块起始（左标签区右侧）
 
     const int decoCount = 4;
-    const double decoLineW = 12;    // 每条装饰竖线宽（无间距 → 拼成一条粗线）
+    const double decoLineW = 10;    // 每条装饰竖线宽（无间距 → 拼成一条粗线）
     const double decoGap = 0;       // 四条靠紧，间距为 0
     const double rightEdgePad = 3;  // 最右留白（贴边）
     const double decoTotalW = decoCount * decoLineW + (decoCount - 1) * decoGap;
