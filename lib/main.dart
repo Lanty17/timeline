@@ -115,6 +115,20 @@ class _TimelineScreenState extends State<TimelineScreen> {
   static const String _rangeFile = r'D:\Downloads\timeline\range.json';
   static const String _topFile = r'D:\Downloads\timeline\top.json';
 
+  // 把保存的绝对时刻重新映射到|ref|（今天）同钟点，可选跨天|extraDay|
+  DateTime _rebase(DateTime src, DateTime ref, [int extraDay = 0]) =>
+      DateTime(ref.year, ref.month, ref.day + extraDay, src.hour, src.minute);
+
+  // 由 JSON 构造任务，并把日期统一定位到今天
+  Task _taskFrom(Map m, DateTime ref) {
+    final b = DateTime.parse(m['b'] as String);
+    final e = DateTime.parse(m['e'] as String);
+    final bd = DateTime(b.year, b.month, b.day);
+    final ed = DateTime(e.year, e.month, e.day);
+    final extra = ed.difference(bd).inDays;
+    return Task(_rebase(b, ref), _rebase(e, ref, extra),
+        m['t'] as String, detail: m['d'] as String? ?? '');
+  }
   void _loadTasks() {
     try {
       final f = File(_taskFile);
@@ -123,9 +137,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
       final loaded = <Task>[
         for (final m in list)
           if (m is Map)
-            Task(DateTime.parse(m['b'] as String),
-                DateTime.parse(m['e'] as String), m['t'] as String,
-                detail: m['d'] as String? ?? ''),
+            _taskFrom(m, _now),
       ];
       if (loaded.isNotEmpty) _tasks = loaded;
     } catch (_) {}
@@ -158,8 +170,13 @@ class _TimelineScreenState extends State<TimelineScreen> {
       if (!f.existsSync()) return;
       final m = jsonDecode(f.readAsStringSync());
       if (m is Map && m['s'] is String && m['e'] is String) {
-        _start = DateTime.parse(m['s'] as String);
-        _end = DateTime.parse(m['e'] as String);
+        final s = DateTime.parse(m['s'] as String);
+        final e = DateTime.parse(m['e'] as String);
+        final sd = DateTime(s.year, s.month, s.day);
+        final ed = DateTime(e.year, e.month, e.day);
+        final extra = ed.difference(sd).inDays;
+        _start = _rebase(s, _now);
+        _end = _rebase(e, _now, extra);
       }
     } catch (_) {}
   }
